@@ -25,6 +25,7 @@ model Event {
   title           String
   date            DateTime
   predictionCount Int          @default(0)
+  result          String?
   predictions     Prediction[]
 }
 
