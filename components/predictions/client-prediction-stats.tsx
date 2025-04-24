@@ -23,6 +23,7 @@ export default function ClientPredictionStats({ eventStats }: ClientPredictionSt
     { name: "Away Win", value: lossCount },
   ]
 
+  const filteredData = data.filter((entry) => entry.value > 0)
   const COLORS = ["#10b981", "#6366f1", "#ef4444"]
 
   if (totalPredictions === 0) {
@@ -48,7 +49,7 @@ export default function ClientPredictionStats({ eventStats }: ClientPredictionSt
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
-                data={data}
+                data={filteredData}
                 cx="50%"
                 cy="50%"
                 labelLine={false}
@@ -57,7 +58,7 @@ export default function ClientPredictionStats({ eventStats }: ClientPredictionSt
                 dataKey="value"
                 label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
               >
-                {data.map((entry, index) => (
+                {filteredData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>

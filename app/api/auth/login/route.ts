@@ -32,6 +32,7 @@ export async function POST(request: NextRequest) {
     const response = NextResponse.json({
       id: user.id,
       name: user.name,
+      isAdmin: user.isAdmin,
     })
 
     // Set auth cookie

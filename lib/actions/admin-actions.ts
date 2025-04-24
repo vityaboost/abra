@@ -108,3 +108,36 @@ export async function deleteEvent(eventId: string) {
     throw new Error("Failed to delete event")
   }
 }
+
+export async function finalizeEvent(eventId: string, result: string) {
+  try {
+    // 1) Обновляем сам Event
+    await prisma.event.update({
+      where: { id: eventId },
+      data:  { result },
+    });
+
+    // 2) Достаем все прогнозы на это событие
+    const preds = await prisma.prediction.findMany({
+      where: { eventId },
+    });
+
+    // 3) Проводим начисление: 1 балл за верный исход, 0 иначе
+    for (const p of preds) {
+      const points = p.outcome === result ? 1 : 0;
+      await prisma.user.update({
+        where: { id: p.userId },
+        data:  { score: { increment: points } },
+      });
+    }
+
+    // 4) Перегенерить кеши страниц
+    revalidatePath("/admin/events");
+    revalidatePath("/events");
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error finalizing event:", error);
+    throw new Error("Failed to finalize event");
+  }
+}
