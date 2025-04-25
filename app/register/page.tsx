@@ -1,56 +1,79 @@
-"use client"
+"use client";
 
-import type React from "react"
-
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { useUser } from "@/context/user-context"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import Link from "next/link"
-import { useToast } from "@/components/ui/use-toast"
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useUser } from "@/context/user-context";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import Link from "next/link";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function RegisterPage() {
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const { register } = useUser()
-  const router = useRouter()
-  const { toast } = useToast()
+  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { register } = useUser();
+  const router = useRouter();
+  const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
+    e.preventDefault();
+    setIsLoading(true);
+
+    console.log("Submitting register with:", { email, username, password });
 
     try {
-      await register(username, password)
+      await register(email, username, password);
       toast({
         title: "Registration successful",
         description: "You have been registered and logged in.",
-      })
-      router.push("/events")
+      });
+      router.push("/events");
     } catch (error) {
       toast({
         title: "Registration failed",
-        description: error instanceof Error ? error.message : "Something went wrong",
+        description:
+          error instanceof Error ? error.message : "Something went wrong",
         variant: "destructive",
-      })
+      });
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="flex justify-center items-center py-12">
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Create an account</CardTitle>
-          <CardDescription>Register to start making predictions on sports events</CardDescription>
+          <CardDescription>
+            Register to start making predictions on sports events
+          </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                disabled={isLoading}
+              />
+            </div>
             <div className="space-y-2">
               <Label htmlFor="username">Username</Label>
               <Input
@@ -88,5 +111,6 @@ export default function RegisterPage() {
         </form>
       </Card>
     </div>
-  )
+  );
 }
+

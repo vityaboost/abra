@@ -1,63 +1,65 @@
-"use client"
+"use client";
 
-import type React from "react"
-
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { useUser } from "@/context/user-context"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import Link from "next/link"
-import { useToast } from "@/components/ui/use-toast"
+import type React from "react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useUser } from "@/context/user-context";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import Link from "next/link";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function LoginPage() {
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const { login } = useUser()
-  const router = useRouter()
-  const { toast } = useToast()
+  const [identifier, setIdentifier] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const { login } = useUser();
+  const router = useRouter();
+  const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-
+    e.preventDefault();
+    setIsLoading(true);
     try {
-      await login(username, password)
-      toast({
-        title: "Login successful",
-        description: "You have been logged in.",
-      })
-      router.push("/events")
+      await login(identifier, password);
+      toast({ title: "Logged in", description: "Welcome back!" });
+      router.push("/events");
     } catch (error) {
       toast({
         title: "Login failed",
-        description: error instanceof Error ? error.message : "Invalid username or password",
+        description: error instanceof Error ? error.message : "Invalid credentials",
         variant: "destructive",
-      })
+      });
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="flex justify-center items-center py-12">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>Log in to your account</CardTitle>
-          <CardDescription>Enter your credentials to access your account</CardDescription>
+          <CardTitle>Log in</CardTitle>
+          <CardDescription>Use your email or username</CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="identifier">Email or Username</Label>
               <Input
-                id="username"
+                id="identifier"
                 type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                value={identifier}
+                onChange={(e) => setIdentifier(e.target.value)}
                 required
                 disabled={isLoading}
               />
@@ -79,7 +81,7 @@ export default function LoginPage() {
               {isLoading ? "Logging in..." : "Log in"}
             </Button>
             <div className="text-center text-sm">
-              Don&apos;t have an account?{" "}
+              Don’t have an account?{" "}
               <Link href="/register" className="text-primary hover:underline">
                 Register
               </Link>
@@ -88,5 +90,5 @@ export default function LoginPage() {
         </form>
       </Card>
     </div>
-  )
+  );
 }

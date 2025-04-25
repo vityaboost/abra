@@ -21,22 +21,25 @@ export async function getUserPredictions(userId: string): Promise<PredictionWith
 
 export async function getUserPredictionStats(userId: string) {
   const predictions = await prisma.prediction.findMany({
-    where: {
-      userId,
-    },
-  })
+    where: { userId },
+    include: { event: true },
+  });
 
-  // In a real app, you would compare predictions with actual results
-  // For this example, we'll simulate some stats
-  const totalPredictions = predictions.length
-  const correctPredictions = Math.floor(totalPredictions * 0.7) // Simulate 70% accuracy
-  const accuracy = totalPredictions > 0 ? (correctPredictions / totalPredictions) * 100 : 0
+  const totalPredictions = predictions.length;
+  const correctPredictions = predictions.filter(
+    (p) => p.event.result !== null && p.outcome === p.event.result
+  ).length;
+
+  const accuracy =
+    totalPredictions > 0
+      ? Math.round((correctPredictions / totalPredictions) * 100)
+      : 0;
 
   return {
     totalPredictions,
     correctPredictions,
     accuracy,
-  }
+  };
 }
 
 export async function getUserPredictionForEvent(userId: string, eventId: string) {
