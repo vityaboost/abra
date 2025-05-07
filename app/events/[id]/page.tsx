@@ -9,6 +9,7 @@ import ClientPredictionStats from "@/components/predictions/client-prediction-st
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { OfferTrigger } from '@/components/OfferTrigger'
 
 export const dynamic = "force-dynamic"
 
@@ -95,6 +96,7 @@ export default async function EventPage({ params }: { params: { id: string } }) 
       <Suspense fallback={<div>Loading prediction stats...</div>}>
         <ClientPredictionStats eventStats={eventStats} />
       </Suspense>
+      <OfferTrigger eventId={eventId} />
     </div>
   )
 }
