@@ -23,6 +23,7 @@ export default function Header() {
   const navigation = [
     { name: "Home", href: "/" },
     { name: "Events", href: "/events" },
+    { name: "Leaderboard", href: "/leaderboard" },
   ]
 
   const isActive = (path: string) => {

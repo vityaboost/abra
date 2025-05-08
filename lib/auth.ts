@@ -17,6 +17,7 @@ export async function getUserFromCookies(cookieStore: ReturnType<typeof cookies>
       select: {
         id: true,
         name: true,
+        isAdmin: true,
       },
     })
 

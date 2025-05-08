@@ -7,7 +7,7 @@ export async function getAdminStats() {
     prisma.prediction.count(),
     prisma.user.findMany({
       take: 5,
-      orderBy: { id: "desc" },
+      orderBy: { createdAt: "desc" },
       select: {
         id: true,
         name: true,

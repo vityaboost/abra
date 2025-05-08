@@ -13,8 +13,11 @@ datasource db {
 model User {
   id          String       @id @default(cuid())
   name        String       @unique
+  email       String?       @unique
   password    String
   isAdmin     Boolean      @default(false)
+  createdAt  DateTime     @default(now())
+  score      Int          @default(0)
   predictions Prediction[]
 }
 
@@ -23,6 +26,7 @@ model Event {
   title           String
   date            DateTime
   predictionCount Int          @default(0)
+  result          String?
   predictions     Prediction[]
 }
 
