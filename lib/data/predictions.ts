@@ -60,9 +60,9 @@ export async function getEventPredictionStats(eventId: string) {
     },
   })
 
-  const winCount = predictions.filter((p) => p.outcome === "win").length
+  const winCount = predictions.filter((p) => p.outcome === "home").length
   const drawCount = predictions.filter((p) => p.outcome === "draw").length
-  const lossCount = predictions.filter((p) => p.outcome === "loss").length
+  const lossCount = predictions.filter((p) => p.outcome === "away").length
 
   return {
     winCount,
