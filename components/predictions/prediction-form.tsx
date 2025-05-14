@@ -37,7 +37,7 @@ export default function PredictionForm({
   eventId,
   userId,
 }: PredictionFormProps) {
-  const [outcome, setOutcome] = useState<"win" | "draw" | "loss">("win")
+  const [outcome, setOutcome] = useState<"home"|"draw"|"away">("home")
   const [homeScore, setHomeScore] = useState<string>("0")
   const [awayScore, setAwayScore] = useState<string>("0")
   const [isPending, setIsPending] = useState(false)
@@ -115,11 +115,11 @@ export default function PredictionForm({
                 onValueChange={setOutcome}
                 className="flex flex-col space-y-2"
               >
-                {["win", "draw", "loss"].map((val) => (
+                {["home", "draw", "away"].map((val) => (
                   <div key={val} className="flex items-center space-x-2">
                     <RadioGroupItem value={val as any} id={val} />
                     <Label htmlFor={val}>
-                      {val === "win"
+                      {val === "home"
                         ? "Home Team Win"
                         : val === "draw"
                         ? "Draw"
@@ -174,44 +174,32 @@ export default function PredictionForm({
 
       {/* Модалка с оффером */}
       <Dialog.Root open={isOfferOpen} onOpenChange={(o) => o && setIsOfferOpen(o)}>
-  <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm data-[state=open]:animate-overlayShow" />
-  <Dialog.Content className="fixed inset-0 m-auto max-w-sm p-6 bg-white rounded-xl shadow-xl data-[state=open]:animate-contentShow focus:outline-none">
-    <div className="flex flex-col space-y-4">
-      <Dialog.Title className="text-xl font-semibold text-gray-900 flex items-center gap-2">
-        <span className="text-2xl">🎯</span>
-        <span>Специальное предложение!</span>
-      </Dialog.Title>
-      
-      {offer && (
-        <div className="space-y-4">
-          <p className="text-gray-600 text-sm leading-snug">
-            {offer.title}
-          </p>
-          <a
-            href={offer.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block px-4 py-2 bg-blue-500 text-white rounded-lg text-center 
-                     font-medium hover:bg-blue-600 transition-colors"
-          >
-            Получить кешбэк {offer.cashback}
-            {offer.cashbackCurrency}
-          </a>
-        </div>
-      )}
-      
-      <div className="pt-3 flex justify-end">
-        <Button 
-          variant="ghost"
-          onClick={handleCloseOffer}
-          className="px-3 py-1.5 text-sm text-gray-500 hover:text-gray-700"
-        >
-          Закрыть
-        </Button>
-      </div>
-    </div>
-  </Dialog.Content>
-</Dialog.Root>
+        <Dialog.Overlay className="fixed inset-0 bg-black/50" />
+        <Dialog.Content className="fixed inset-0 m-auto max-w-sm p-6 bg-white rounded-2xl shadow-lg">
+          <Dialog.Title className="text-xl font-bold mb-4">
+            🎉 Специальное предложение!
+          </Dialog.Title>
+          {offer && (
+            <div className="space-y-4">
+              <p>{offer.title}</p>
+              <a
+                href={offer.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block px-4 py-2 bg-blue-600 text-white rounded-lg text-center"
+              >
+                Получить кешбэк {offer.cashback}
+                {offer.cashbackCurrency}
+              </a>
+            </div>
+          )}
+          <div className="mt-6 text-right">
+            <Button variant="outline" onClick={handleCloseOffer}>
+              Закрыть
+            </Button>
+          </div>
+        </Dialog.Content>
+      </Dialog.Root>
     </>
   )
 }

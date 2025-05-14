@@ -1,19 +1,32 @@
+"use client"
 
-// Старая загрузка профиля
-
-
+import useSWR from "swr"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
-interface UserStatsProps {
-  stats: {
-    totalPredictions: number
-    correctPredictions: number
-    accuracy: number
-  }
+interface Stats {
+  totalPredictions: number
+  correctPredictions: number
+  accuracy: number
 }
 
-export default function UserStats({ stats }: UserStatsProps) {
-  const { totalPredictions, correctPredictions, accuracy } = stats
+const fetcher = (url: string) =>
+  fetch(url, { credentials: 'include' })
+    .then(res => {
+      if (!res.ok) throw new Error('Network response was not ok')
+      return res.json()
+    })
+
+export default function UserStats() {
+  const { data, error } = useSWR<Stats>('/api/profile/stats', fetcher)
+
+  if (error) {
+    return <div className="text-red-600">Ошибка загрузки статистики</div>
+  }
+  if (!data) {
+    return <div>Загрузка статистики...</div>
+  }
+
+  const { totalPredictions, correctPredictions, accuracy } = data
 
   return (
     <div className="grid gap-4 md:grid-cols-3">
@@ -32,8 +45,8 @@ export default function UserStats({ stats }: UserStatsProps) {
             strokeLinejoin="round"
             className="text-muted-foreground"
           >
-            <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
-            <line x1="4" x2="4" y1="22" y2="15"></line>
+            <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
+            <line x1="4" x2="4" y1="22" y2="15" />
           </svg>
         </CardHeader>
         <CardContent>
@@ -57,8 +70,8 @@ export default function UserStats({ stats }: UserStatsProps) {
             strokeLinejoin="round"
             className="text-muted-foreground"
           >
-            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+            <polyline points="22 4 12 14.01 9 11.01" />
           </svg>
         </CardHeader>
         <CardContent>
@@ -82,7 +95,7 @@ export default function UserStats({ stats }: UserStatsProps) {
             strokeLinejoin="round"
             className="text-muted-foreground"
           >
-            <path d="M12 20v-6M6 20V10M18 20V4"></path>
+            <path d="M12 20v-6M6 20V10M18 20V4" />
           </svg>
         </CardHeader>
         <CardContent>

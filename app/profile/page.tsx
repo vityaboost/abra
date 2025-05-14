@@ -2,7 +2,7 @@ import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
 import { getUserFromCookies } from "@/lib/auth"
 import { getUserPredictions, getUserPredictionStats } from "@/lib/data/predictions"
-import UserStats from "@/components/profile/user-stats"
+import UserStats from "@/components/profile/UserStats"
 import ClientProfileTabs from "@/components/profile/client-profile-tabs"
 import { Suspense } from "react"
 
@@ -17,7 +17,8 @@ export default async function ProfilePage() {
   }
 
   const userPredictions = await getUserPredictions(user.id)
-  const userStats = await getUserPredictionStats(user.id)
+
+  console.log(UserStats)
 
   return (
     <div className="space-y-8">
@@ -26,7 +27,7 @@ export default async function ProfilePage() {
         <p className="text-muted-foreground mt-2">View your prediction history and statistics</p>
       </div>
 
-      <UserStats stats={userStats} />
+      <UserStats  />
 
       <Suspense fallback={<div>Loading prediction history...</div>}>
         <ClientProfileTabs predictions={userPredictions} />
