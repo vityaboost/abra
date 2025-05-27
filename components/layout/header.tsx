@@ -24,6 +24,7 @@ export default function Header() {
     { name: "Home", href: "/" },
     { name: "Events", href: "/events" },
     { name: "Leaderboard", href: "/leaderboard" },
+    { name: "News", href: "/news" },
   ]
 
   const isActive = (path: string) => {

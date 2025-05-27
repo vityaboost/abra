@@ -3,6 +3,7 @@
 import React, { useState } from "react"
 import { useRouter } from "next/navigation"
 import * as Dialog from "@radix-ui/react-dialog"
+import Image from "next/image"
 
 import {
   Card,
@@ -173,25 +174,25 @@ export default function PredictionForm({
       )}
 
       {/* Модалка с оффером */}
-      <Dialog.Root open={isOfferOpen} onOpenChange={(o) => o && setIsOfferOpen(o)}>
+      <Dialog.Root open={isOfferOpen} onOpenChange={(open) => !open && handleCloseOffer()}>
         <Dialog.Overlay className="fixed inset-0 bg-black/50" />
         <Dialog.Content className="fixed inset-0 m-auto max-w-sm p-6 bg-white rounded-2xl shadow-lg">
-          <Dialog.Title className="text-xl font-bold mb-4">
-            🎉 Специальное предложение!
-          </Dialog.Title>
           {offer && (
-            <div className="space-y-4">
-              <p>{offer.title}</p>
-              <a
-                href={offer.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block px-4 py-2 bg-blue-600 text-white rounded-lg text-center"
-              >
-                Получить кешбэк {offer.cashback}
-                {offer.cashbackCurrency}
-              </a>
-            </div>
+            <a
+              href={offer.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={handleCloseOffer}
+              className="block"
+            >
+              <Image
+                src="/banner3.gif"
+                alt="Реклама"
+                width={300}
+                height={250}
+                priority
+              />
+            </a>
           )}
           <div className="mt-6 text-right">
             <Button variant="outline" onClick={handleCloseOffer}>
