@@ -40,7 +40,7 @@ export default async function NewsDetail({
   return (
     <div className="max-w-3xl mx-auto p-4">
       <Link href="/news" className="inline-block text-blue-600 underline mb-4">
-        ← Назад к новостям
+        ← Back to news
       </Link>
 
       {news.imageUrl && (

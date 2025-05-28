@@ -75,7 +75,7 @@ export function OfferTrigger({ eventId }: { eventId: string }) {
         )}
         <div className="mt-6 text-right">
           <Dialog.Close asChild>
-            <Button variant="outline">Закрыть</Button>
+            <Button variant="outline">Close</Button>
           </Dialog.Close>
         </div>
       </Dialog.Content>

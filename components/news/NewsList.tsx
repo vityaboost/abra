@@ -43,7 +43,8 @@ export default function NewsList({ initialNews }: Props) {
       </div>
       <div ref={loadMoreRef} />
       {loading && <LoadingSpinner />}
-      {!hasMore && <p className="text-center mt-4 text-gray-500">Больше нет</p>}
+      {!hasMore && <p className="text-center mt-4 text-gray-500">No more
+        </p>}
     </div>
   );
 }
