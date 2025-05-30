@@ -1,42 +1,50 @@
 // lib/news.ts
-import fs from 'fs';
-import path from 'path';
-import matter from 'gray-matter';
-import { NewsItem, NewsFull } from '@/types/news';
+import fs from 'fs'
+import path from 'path'
+import matter from 'gray-matter'
+import { NewsItem } from '@/types/news'
 
-const newsDir = path.join(process.cwd(), 'content', 'news');
+const NEWS_DIR = path.join(process.cwd(), 'content', 'news')
 
-// Список всех новостей (без контента)
 export function getAllNews(): NewsItem[] {
-  const files = fs.readdirSync(newsDir);
-  const items = files.map(filename => {
-    const slug = filename.replace(/\.mdx$/, '');
-    const raw = fs.readFileSync(path.join(newsDir, filename), 'utf8');
-    const { data } = matter(raw);
-    return {
-      id: slug,
-      title: data.title,
-      summary: data.summary,
-      publishedAt: data.publishedAt,
-      imageUrl: data.imageUrl,
-    };
-  });
-  return items.sort(
-    (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
-  );
+  const files = fs
+    .readdirSync(NEWS_DIR)
+    .filter((f) => f.endsWith('.mdx'))
+
+  return files
+    .map((filename) => {
+      const filePath = path.join(NEWS_DIR, filename)
+      const source = fs.readFileSync(filePath, 'utf8')
+      const { data } = matter(source)
+      const id = filename.replace(/\.mdx$/, '')
+
+      return {
+        id,
+        title: String(data.title || ''),
+        summary: String(data.summary || ''),
+        publishedAt: String(data.publishedAt || ''),
+        imageUrl: String(data.imageUrl || ''),
+      }
+    })
+    .sort((a, b) =>
+      new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+    )
 }
 
-// Получить одну новость вместе с контентом MDX
-export function getNewsById(id: string): NewsFull {
-  const fullPath = path.join(newsDir, `${id}.mdx`);
-  const raw = fs.readFileSync(fullPath, 'utf8');
-  const { data, content } = matter(raw);
+/** Возвращает всю запись вместе с MDX-контентом */
+export function getNewsById(id: string): (NewsItem & { content: string }) | null {
+  const filePath = path.join(NEWS_DIR, `${id}.mdx`)
+  if (!fs.existsSync(filePath)) return null
+
+  const source = fs.readFileSync(filePath, 'utf8')
+  const { data, content } = matter(source)
+
   return {
     id,
-    title: data.title,
-    summary: data.summary,
-    publishedAt: data.publishedAt,
-    imageUrl: data.imageUrl,
-    content,
-  };
+    title: String(data.title || ''),
+    summary: String(data.summary || ''),
+    publishedAt: String(data.publishedAt || ''),
+    imageUrl: String(data.imageUrl || ''),
+    content,         // ← вот оно!
+  }
 }

@@ -1,13 +1,14 @@
 // app/layout.tsx
 import type React from "react";
 import type { Metadata } from "next";
-import { cookies } from "next/headers";                        // ← импортируем
+import { cookies } from "next/headers";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";   // :contentReference[oaicite:0]{index=0}
+import { ThemeProvider } from "@/components/theme-provider";
 import Header from "@/components/layout/header";
 import { UserProvider } from "@/context/user-context";
 import { Toaster } from "@/components/ui/toaster";
+import Script from "next/script";  // ← импортируем Script
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,7 +23,6 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // читаем тему из cookie (если есть)
   const themeCookie = cookies().get("theme")?.value as
     | "light"
     | "dark"
@@ -31,12 +31,31 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
+      <head>
+        {/* Google tag (gtag.js) */}
+        {/* 1) Подгружаем скрипт библиотеки */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=AW-743840970"
+          strategy="afterInteractive"
+        />
+        {/* 2) Инициализируем gtag */}
+        <Script id="gtag-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){ dataLayer.push(arguments); }
+            gtag('js', new Date());
+            gtag('config', 'AW-743840970', {
+              page_path: window.location.pathname,
+            });
+          `}
+        </Script>
+      </head>
       <body className={inter.className}>
         <ThemeProvider
           attribute="class"
           enableSystem={true}
-          defaultTheme="light"         // что SSR выдаст, если cookie нет
-          forcedTheme={themeCookie}    // если нашли в cookie, применяем сразу
+          defaultTheme="light"
+          forcedTheme={themeCookie}
         >
           <UserProvider>
             <div className="min-h-screen flex flex-col">

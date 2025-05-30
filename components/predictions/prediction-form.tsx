@@ -174,9 +174,10 @@ export default function PredictionForm({
       )}
 
       {/* Модалка с оффером */}
-      <Dialog.Root open={isOfferOpen} onOpenChange={(open) => !open && handleCloseOffer()}>
+      <Dialog.Root open={isOfferOpen} onOpenChange={setIsOfferOpen}>
         <Dialog.Overlay className="fixed inset-0 bg-black/50" />
-        <Dialog.Content className="fixed inset-0 m-auto max-w-sm p-6 bg-white rounded-2xl shadow-lg">
+        <Dialog.Content className="fixed top-1/2 left-1/2 max-w-sm p-6 bg-white rounded-2xl shadow-lg -translate-x-1/2 -translate-y-1/2">
+          <Dialog.Title className="sr-only">Special Offer</Dialog.Title>
           {offer && (
             <a
               href={offer.link}
@@ -187,7 +188,7 @@ export default function PredictionForm({
             >
               <Image
                 src="/banner3.gif"
-                alt="Реклама"
+                alt="Advertisement"
                 width={300}
                 height={250}
                 priority
@@ -195,9 +196,11 @@ export default function PredictionForm({
             </a>
           )}
           <div className="mt-6 text-right">
-            <Button variant="outline" onClick={handleCloseOffer}>
-              Закрыть
-            </Button>
+            <Dialog.Close asChild>
+              <Button variant="outline" onClick={handleCloseOffer}>
+                Close
+              </Button>
+            </Dialog.Close>
           </div>
         </Dialog.Content>
       </Dialog.Root>

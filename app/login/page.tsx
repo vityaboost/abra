@@ -1,7 +1,7 @@
-"use client";
+// app/login/page.tsx или components/LoginPage.tsx
+'use client';
 
-import type React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/context/user-context";
 import { Button } from "@/components/ui/button";
@@ -22,21 +22,27 @@ export default function LoginPage() {
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   const { login } = useUser();
   const router = useRouter();
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMessage(null);
     setIsLoading(true);
+
     try {
       await login(identifier, password);
       toast({ title: "Logged in", description: "Welcome back!" });
       router.push("/events");
     } catch (error) {
+      const msg = error instanceof Error ? error.message : "Invalid credentials";
+      setErrorMessage(msg);
       toast({
         title: "Login failed",
-        description: error instanceof Error ? error.message : "Invalid credentials",
+        description: msg,
         variant: "destructive",
       });
     } finally {
@@ -51,6 +57,7 @@ export default function LoginPage() {
           <CardTitle>Log in</CardTitle>
           <CardDescription>Use your email or username</CardDescription>
         </CardHeader>
+
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
             <div className="space-y-2">
@@ -75,7 +82,13 @@ export default function LoginPage() {
                 disabled={isLoading}
               />
             </div>
+
+            {/* Здесь показываем ошибку */}
+            {errorMessage && (
+              <p className="text-sm text-red-600">{errorMessage}</p>
+            )}
           </CardContent>
+
           <CardFooter className="flex flex-col space-y-4">
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? "Logging in..." : "Log in"}

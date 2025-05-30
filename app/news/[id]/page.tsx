@@ -1,41 +1,37 @@
 // app/news/[id]/page.tsx
+import fs from 'fs'
+import path from 'path'
+import { format, parseISO, isValid } from 'date-fns'
+import Link from 'next/link'
+import Image from 'next/image'
+import { remark } from 'remark'
+import html from 'remark-html'
+import { getNewsById, getAllNews } from '@/lib/news'
+import { notFound } from 'next/navigation'
 
-import Link from 'next/link';
-import Image from 'next/image';
-import { format } from 'date-fns';
-import { getNewsById, getAllNews } from '@/lib/news';
-import { remark } from 'remark';
-import html from 'remark-html';
-
-// Чтобы SSG знал все динамические пути:
+// статические пути для SSG
 export function generateStaticParams() {
-  const all = getAllNews();
-  return all.map(item => ({ id: item.id }));
+  return getAllNews().map((item) => ({ id: item.id }))
 }
 
-// Эта страница — серверный компонент
 export default async function NewsDetail({
   params: { id },
 }: {
-  params: { id: string };
+  params: { id: string }
 }) {
-  let news;
-  try {
-    news = getNewsById(id);
-  } catch {
-    return (
-      <div className="max-w-2xl mx-auto p-4">
-        <p className="text-red-600">Новость не найдена.</p>
-        <Link href="/news" className="text-blue-600 underline">
-          Вернуться к списку
-        </Link>
-      </div>
-    );
+  // берём полный объект (включая content)
+  const news = getNewsById(id)
+  if (!news) {
+    notFound()
   }
 
-  // Преобразуем MDX-контент в чистый HTML
-  const processed = await remark().use(html).process(news.content);
-  const contentHtml = processed.toString();
+  // превращаем MDX-контент в чистый HTML
+  const processed = await remark().use(html).process(news.content)
+  const contentHtml = processed.toString()
+
+  // безопасно парсим дату
+  let date = parseISO(news.publishedAt)
+  if (!isValid(date)) date = new Date()
 
   return (
     <div className="max-w-3xl mx-auto p-4">
@@ -56,13 +52,14 @@ export default async function NewsDetail({
 
       <h1 className="text-3xl font-bold mb-2">{news.title}</h1>
       <p className="text-gray-500 mb-4">
-        {format(new Date(news.publishedAt), 'dd MMMM yyyy')}
+        {format(date, 'dd MMMM yyyy')}
       </p>
 
+      {/* вот она — вёрстка основного текста */}
       <article
         className="prose max-w-none"
         dangerouslySetInnerHTML={{ __html: contentHtml }}
       />
     </div>
-  );
+  )
 }

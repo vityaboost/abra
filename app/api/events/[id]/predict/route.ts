@@ -33,7 +33,7 @@ export async function POST(
   const offer = {
     id: '1',
     title: 'Супер-скидка 20% на билеты!',
-    link: 'https://partner.example.com/special-offer',
+    link: 'https://xametyst.com/hWSJCtH6',
     amount: 100,
     currency: 'USD',
     cashback: Math.round(100 * 0.05 * 100) / 100,

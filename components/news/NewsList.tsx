@@ -38,13 +38,23 @@ export default function NewsList({ initialNews }: Props) {
 
   return (
     <div className="max-w-4xl mx-auto p-4">
+      {/* Сетка содержит только реальные карточки новостей */}
       <div className="grid gap-6 md:grid-cols-2">
-        {news.map(item => <NewsCard key={item.id} {...item} />)}
+        {news.map(item => (
+          <NewsCard key={item.id} {...item} />
+        ))}
       </div>
-      <div ref={loadMoreRef} />
+
+      {/* Триггер для бесконечного скролла — вынесен за пределы грида */}
+      <div ref={loadMoreRef} className="h-1" />
+
       {loading && <LoadingSpinner />}
-      {!hasMore && <p className="text-center mt-4 text-gray-500">No more
-        </p>}
+
+      {!hasMore && (
+        <p className="text-center mt-4 text-gray-500">
+          No more
+        </p>
+      )}
     </div>
   );
 }

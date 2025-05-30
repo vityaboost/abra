@@ -11,7 +11,7 @@ export default function NewsCard({
   publishedAt,
   imageUrl,
 }: NewsItem) {
-  // Попытка распарсить дату из строки; если не валидна — используем текущую дату
+  // Парсим дату
   let date = parseISO(publishedAt || '')
   if (!isValid(date)) {
     date = new Date()
@@ -22,14 +22,18 @@ export default function NewsCard({
       href={`/news/${id}`}
       className="block border rounded-lg overflow-hidden shadow hover:shadow-lg transition p-4"
     >
-      <div className="w-full h-48 relative mb-4">
-        <Image
-          src={imageUrl}
-          alt={title}
-          fill
-          className="object-cover rounded"
-        />
-      </div>
+      {/* Рендерим картинку только если imageUrl не пустой */}
+      {imageUrl ? (
+        <div className="w-full h-48 relative mb-4">
+          <Image
+            src={imageUrl}
+            alt={title}
+            fill
+            className="object-cover rounded"
+          />
+        </div>
+      ) : null}
+
       <h2 className="text-xl font-semibold mb-2">{title}</h2>
       <p className="text-sm text-gray-500 mb-2">
         {format(date, 'dd MMM yyyy')}
