@@ -16,6 +16,8 @@ import {
 } from "@/components/ui/card";
 import Link from "next/link";
 import { useToast } from "@/components/ui/use-toast";
+import { sendRegistrationConversion } from "@/lib/gtag"; // <-- импорт
+
 
 export default function RegisterPage() {
   const [email, setEmail] = useState("");
@@ -39,7 +41,10 @@ export default function RegisterPage() {
         title: "Registration successful",
         description: "You have been registered and logged in.",
       });
-      router.push("/events");
+      sendRegistrationConversion();
+      setTimeout(() => {
+            router.push("/events");
+          }, 300);
     } catch (error) {
       toast({
         title: "Registration failed",
